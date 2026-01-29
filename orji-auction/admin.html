@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+  <title>Admin — ABU Auction</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-container">
+      <div class="header-left">
+        <h1 class="brand">🎯 ABU Auction</h1>
+        <p class="tagline">Admin Dashboard</p>
+      </div>
+      <nav class="header-nav">
+        <span id="admin-email" class="user-email"></span>
+        <a href="index.html" class="btn btn-outline">Back to Market</a>
+        <button id="admin-logout" class="btn btn-primary">Logout</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="admin-main">
+    <div class="admin-layout">
+      <aside class="admin-sidebar">
+        <section class="admin-panel">
+          <h2>Create Auction</h2>
+          <form id="create-auction-form" class="admin-form">
+            <div class="form-group">
+              <label for="a-title">Item Title</label>
+              <input id="a-title" type="text" placeholder="e.g., Laptop — Core i5" required />
+            </div>
+            <div class="form-group">
+              <label for="a-desc">Description</label>
+              <textarea id="a-desc" placeholder="Brief item description..." rows="3"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="a-image">Image URL (Optional)</label>
+              <input id="a-image" type="url" placeholder="https://example.com/image.jpg" />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="a-start">Start Time</label>
+                <input id="a-start" type="datetime-local" />
+              </div>
+              <div class="form-group">
+                <label for="a-end">End Time *</label>
+                <input id="a-end" type="datetime-local" required />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="a-start-price">Starting Price (₦)</label>
+              <input id="a-start-price" type="number" placeholder="50000" min="0" required />
+            </div>
+            <div class="form-row">
+              <button class="btn btn-primary btn-block" type="submit">Create Auction</button>
+              <button id="seed-demo" class="btn btn-outline" type="button">Seed Demo</button>
+            </div>
+          </form>
+        </section>
+      </aside>
+
+      <section class="admin-content">
+        <h2>Active Auctions</h2>
+        <div id="admin-auctions" class="admin-auctions-grid"></div>
+      </section>
+    </div>
+  </main>
+
+  <div id="admin-auth-modal" class="modal hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <button id="close-admin-modal" class="modal-close" aria-label="Close">×</button>
+      <div class="modal-header">
+        <h2>Admin Access</h2>
+        <p class="modal-subtitle">Enter your admin credentials to manage auctions</p>
+      </div>
+      <form id="admin-auth-form" class="auth-form">
+        <div id="admin-login-error" style="color: #ef4444; background: #fee2e2; padding: 10px; border-radius: 4px; margin-bottom: 12px; display: none; font-size: 12px; font-weight: 500;"></div>
+        <div class="form-group">
+          <label for="admin-login-email">Email</label>
+          <input id="admin-login-email" type="email" placeholder="admin@123" required />
+        </div>
+        <div class="form-group">
+          <label for="admin-login-password">Password</label>
+          <input id="admin-login-password" type="password" placeholder="••••••••" required />
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Login as Admin</button>
+      </form>
+      <div class="demo-credentials">
+        <p class="demo-label">Admin Credentials:</p>
+        <code>admin@123</code>
+        <code>admin123</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- Debug Panel -->
+  <div id="debug-panel" style="position: fixed; bottom: 20px; right: 20px; background: #1a1a2e; color: #eee; padding: 15px; border-radius: 8px; font-size: 12px; max-width: 400px; max-height: 300px; overflow-y: auto; border: 2px solid #00d4ff; z-index: 999; font-family: monospace;">
+    <div style="margin-bottom: 10px; font-weight: bold; color: #00d4ff;">🔍 DEBUG PANEL</div>
+    <button id="clear-storage-btn" style="width: 100%; padding: 6px; margin-bottom: 8px; background: #ef4444; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px;">Clear All localStorage</button>
+    <div style="margin-bottom: 8px;">
+      <strong>Current User:</strong>
+      <pre id="debug-current-user" style="background: #0f3460; padding: 8px; border-radius: 4px; margin: 5px 0; max-height: 120px; overflow-y: auto; white-space: pre-wrap; word-break: break-all;">loading...</pre>
+    </div>
+    <div>
+      <strong>All Users in Storage:</strong>
+      <pre id="debug-all-users" style="background: #0f3460; padding: 8px; border-radius: 4px; margin: 5px 0; max-height: 120px; overflow-y: auto; white-space: pre-wrap; word-break: break-all;">loading...</pre>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

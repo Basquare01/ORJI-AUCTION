@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Admin Login</title>
+  <style>
+    body { font-family: monospace; padding: 20px; background: #f0f0f0; }
+    .box { background: white; padding: 20px; border-radius: 8px; margin: 10px 0; }
+    button { padding: 10px 20px; background: blue; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    code { background: #eee; padding: 2px 6px; border-radius: 3px; }
+    .log { background: #222; color: #0f0; padding: 10px; border-radius: 5px; font-size: 12px; max-height: 300px; overflow-y: auto; margin-top: 10px; }
+    .success { color: green; }
+    .error { color: red; }
+  </style>
+</head>
+<body>
+  <h1>🧪 Admin Login Debug Test</h1>
+  
+  <div class="box">
+    <h2>1. Check if users are seeded</h2>
+    <button onclick="checkUsers()">Check Seeded Users</button>
+    <div id="users-log" class="log"></div>
+  </div>
+
+  <div class="box">
+    <h2>2. Test Login Function</h2>
+    <input id="test-email" placeholder="Email" value="admin@abu.edu" />
+    <input id="test-password" type="password" placeholder="Password" value="admin123" />
+    <button onclick="testLogin()">Test Login</button>
+    <div id="login-log" class="log"></div>
+  </div>
+
+  <div class="box">
+    <h2>3. Check Current User</h2>
+    <button onclick="checkCurrentUser()">Check Current User</button>
+    <div id="current-user-log" class="log"></div>
+  </div>
+
+  <div class="box">
+    <h2>4. Clear All Data</h2>
+    <button onclick="clearAll()" style="background: red;">⚠️ Clear All Local Storage</button>
+  </div>
+
+  <script>
+    const storage = {
+      get(k) {
+        try { return JSON.parse(localStorage.getItem(k)); } catch(e) { return null; }
+      },
+      set(k, v) {
+        localStorage.setItem(k, JSON.stringify(v));
+      }
+    };
+
+    async function hash(text) {
+      const enc = new TextEncoder();
+      const data = enc.encode(text);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    function log(elementId, message, type = 'info') {
+      const el = document.getElementById(elementId);
+      const className = type === 'success' ? 'success' : type === 'error' ? 'error' : '';
+      el.innerHTML += `<div class="${className}">✓ ${message}</div>`;
+    }
+
+    function clearLog(elementId) {
+      document.getElementById(elementId).innerHTML = '';
+    }
+
+    async function checkUsers() {
+      clearLog('users-log');
+      const users = storage.get('users');
+      log('users-log', `Total users in storage: ${users ? users.length : 0}`);
+      if (users) {
+        users.forEach((u, i) => {
+          log('users-log', `User ${i + 1}: ${u.email} (${u.role}) - Hash: ${u.pwHash ? u.pwHash.substring(0, 16) + '...' : 'null'}`, 'success');
+        });
+      }
+      
+      // Test hash of admin123
+      const testHash = await hash('admin123');
+      log('users-log', `Hash of "admin123": ${testHash}`, 'success');
+    }
+
+    async function testLogin() {
+      clearLog('login-log');
+      const email = document.getElementById('test-email').value.trim();
+      const password = document.getElementById('test-password').value;
+      
+      log('login-log', `Attempting login with email: ${email}`);
+      
+      const users = storage.get('users');
+      if (!users) {
+        log('login-log', 'No users found in storage!', 'error');
+        return;
+      }
+
+      const pwHash = await hash(password);
+      log('login-log', `Password hash: ${pwHash}`);
+
+      const user = users.find(u => {
+        const emailMatch = u.email === email.toLowerCase();
+        const hashMatch = u.pwHash === pwHash;
+        log('login-log', `Checking user ${u.email}: email=${emailMatch}, hash=${hashMatch}`, emailMatch && hashMatch ? 'success' : 'error');
+        return emailMatch && hashMatch;
+      });
+
+      if (user) {
+        log('login-log', `✓ Login SUCCESS! User: ${user.email} (${user.role})`, 'success');
+        storage.set('currentUser', { id: user.id, email: user.email, role: user.role });
+      } else {
+        log('login-log', 'Login FAILED - User not found or password incorrect', 'error');
+      }
+    }
+
+    function checkCurrentUser() {
+      clearLog('current-user-log');
+      const user = storage.get('currentUser');
+      if (user) {
+        log('current-user-log', `Logged in as: ${user.email} (${user.role})`, 'success');
+      } else {
+        log('current-user-log', 'No user logged in', 'error');
+      }
+    }
+
+    function clearAll() {
+      if (confirm('Are you sure? This will clear all localStorage data!')) {
+        localStorage.clear();
+        alert('All data cleared!');
+        location.reload();
+      }
+    }
+
+    // Auto-run on load
+    window.addEventListener('load', () => {
+      log('users-log', 'Page loaded. Checking users...');
+      checkUsers();
+    });
+  </script>
+</body>
+</html>

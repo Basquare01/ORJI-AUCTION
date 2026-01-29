@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+  <title>ABU Auction — Student Marketplace</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-container">
+      <div class="header-left">
+        <h1 class="brand">🎯 ABU Auction</h1>
+        <p class="tagline">Student Marketplace</p>
+      </div>
+      <nav class="header-nav">
+        <div id="user-info" class="user-info hidden">
+          <span id="user-email" class="user-email"></span>
+          <button id="btn-logout" class="btn btn-sm">Logout</button>
+        </div>
+        <button id="btn-login" class="btn btn-primary">Login / Register</button>
+        <a href="admin.html" class="btn btn-outline">Admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <section id="user-dashboard" class="user-dashboard hidden">
+      <div class="dashboard-content">
+        <div class="welcome-section">
+          <h2>Welcome back, <span id="dashboard-email"></span>! 👋</h2>
+          <p>Start bidding on amazing items from fellow ABU students</p>
+        </div>
+        <div class="dashboard-stats">
+          <div class="stat-card">
+            <span class="stat-icon">🏆</span>
+            <div>
+              <div class="stat-label">Total Bids</div>
+              <div class="stat-value" id="total-bids">0</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">💰</span>
+            <div>
+              <div class="stat-label">Active Auctions</div>
+              <div class="stat-value" id="active-count">0</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">📊</span>
+            <div>
+              <div class="stat-label">Highest Bid</div>
+              <div class="stat-value" id="highest-bid">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="hero">
+      <h2>Live Auctions</h2>
+      <p>Bid on amazing items from fellow students</p>
+    </section>
+
+    <div class="container">
+      <section class="controls-bar">
+        <div class="search-wrapper">
+          <input id="search" type="text" placeholder="🔍 Search auctions..." class="search-input" />
+        </div>
+        <select id="filter-status" class="filter-select">
+          <option value="all">All Items</option>
+          <option value="active">Active Only</option>
+          <option value="ended">Ended</option>
+        </select>
+      </section>
+
+      <section id="empty-state" class="empty-state hidden">
+        <div class="empty-icon">📭</div>
+        <h3>No auctions yet</h3>
+        <p>Ask an admin to create some auctions or check back later</p>
+        <p class="empty-hint">💡 Admin tip: Visit <strong>admin.html</strong> and use "Seed Demo" to load sample items</p>
+      </section>
+
+      <section id="auctions" class="auction-grid"></section>
+    </div>
+  </main>
+
+  <template id="auction-card-template">
+    <article class="auction-card">
+      <div class="card-image-wrapper">
+        <img class="card-image" src="" alt="" loading="lazy">
+        <span class="card-status"></span>
+      </div>
+      <div class="card-content">
+        <h3 class="card-title"></h3>
+        <p class="card-description"></p>
+        <div class="card-meta-row">
+          <span class="card-meta"></span>
+        </div>
+        <div class="card-price-section">
+          <div class="price-info">
+            <span class="price-label">Current Bid</span>
+            <span class="price-amount">₦<span class="current-price">0</span></span>
+          </div>
+          <div class="timer-display" data-end=""></div>
+        </div>
+        <button class="btn btn-bid-primary">Place Bid</button>
+      </div>
+    </article>
+  </template>
+
+  <div id="auth-modal" class="modal hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <button id="close-modal" class="modal-close" aria-label="Close">×</button>
+      <div class="modal-header">
+        <h2 id="auth-title">Welcome Back</h2>
+        <p id="auth-subtitle" class="modal-subtitle">Sign in to your ABU Auction account</p>
+      </div>
+      <form id="auth-form" class="auth-form">
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input id="email" type="email" placeholder="you@abu.edu" required />
+          <span class="form-error" id="email-error"></span>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input id="password" type="password" placeholder="••••••••" required />
+          <span class="form-error" id="password-error"></span>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" id="auth-submit">Continue</button>
+      </form>
+      <div class="auth-toggle">
+        <p id="auth-prompt">Don't have an account?</p>
+        <button id="switch-auth" type="button" class="btn-text">Create one</button>
+      </div>
+      <div class="demo-credentials">
+        <p class="demo-label">Demo Accounts:</p>
+        <code>admin@abu.edu / admin123</code>
+        <code>student@abu.edu / student123</code>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
